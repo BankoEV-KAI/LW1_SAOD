@@ -56,6 +56,51 @@ void Stack::resize(int newSize) {
 	cout << "–азмер стека увеличен до " << newSize << "." << endl;
 }
 
+int Stack::getVertexStack()
+{
+	if (!isEmpty()) {
+		return data[sp];
+	}
+	else {
+		return -1;
+	}
+}
+
+void Stack::forReturnDeletedItemStack() //можно ли итерироватьс€ по стеку удаленных элементов?
+{
+	if (isEmpty()) {
+		std::cout << "—тек удаленных элементов пуст. " << std::endl;
+	}
+	else {
+		std::cout << "—тек удаленных элементов можно представить следующим образом: [";
+		for (int i = 0; i <= sp; i++) {
+			std::cout << data[i] << ", ";
+		}
+		std::cout << "]. ";
+	}
+}
+
+void Stack::returnFullStack() //если итерироватьс€ запрещено: создаем дополнительный список и работаем с перезаписью
+{
+	if (isEmpty()) {
+		std::cout << "«аданный стек пуст. " << std::endl;
+	}
+	else {
+		int* listMemory = new int[++sp];
+		std::cout << "«аданный стек можно представить следующим образом: [";
+		for (int i = 0; i <= sp; i++) {
+			std::cout << getVertexStack() << ", ";
+			listMemory[sp - i] = data[i];
+			pop();
+		}
+		std::cout << "]. ";
+		for (int i = 0; i <= sp;  i++) {
+			push(listMemory[i]);
+		}
+		delete[] listMemory;
+	}
+}
+
 void Stack::returnStack() {
 	cout << "—осто€ние стека: ";
 	if (!isEmpty()) {
@@ -78,3 +123,5 @@ void Stack::pushRandom(int count)
 		push(value);
 	}
 }
+
+

@@ -15,6 +15,9 @@ struct Stack {
     void returnStack();
     void pushRandom(int count);
     void resize(int newSize);
+    int getVertexStack();
+    void forReturnDeletedItemStack();
+    void returnFullStack();
 };
 
 #endif
