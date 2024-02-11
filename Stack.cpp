@@ -1,127 +1,129 @@
-/*
-проверку пустоты стека
-добавление элемента в вершину стека
-удаление элемента из вершины стека
-вывод текущего состояния стека на экран
 
-*/
 #include "stack.h"
 #include <iostream>
 #include <cstdlib> 
 #include <ctime>
 
-using namespace std;
-
-Stack::Stack(int maxSize) {
-	data = new int[maxSize];
-	size = maxSize;
-	sp = -1;
+void initNullStack(Stack*& _sp, Stack*& _spDeleted) {
+    _sp = nullptr;
+    _spDeleted = nullptr;
 }
 
-Stack::~Stack() {
-	delete[] data;
+bool isEmpty(const Stack* _sp) {
+    return (_sp == nullptr);
 }
 
-bool Stack::isEmpty() {
-	return sp == -1;
+bool isEmptyDeletedStack(const Stack* _spDeleted) {
+    return (_spDeleted == nullptr);
 }
 
-int Stack::pop() {
-	if (!isEmpty()) {
-		return data[sp--];
-	}
-	else {
-		cout << "Стек пуст, невозможно удалить элемент." << endl;
-		return -1;
-	}
+void returnStackStatic(const Stack* _sp) {
+    std::cout << "Состояние стека: ";
+    if (_sp != nullptr) {
+        std::cout << "стек не пуст. ";
+        std::cout << "Вершина стека: " << _sp->value << std::endl;
+    }
+    else {
+        std::cout << "стек пуст.";
+    }
 }
 
-void Stack::push(int value) {
-	if (sp + 1 == size) {
-		resize(size + 10);
-	}
-	data[++sp] = value;
-	cout << "Элемент " << value << " добавлен в вершину стека." << endl;
-
+void returnStackStaticFull(Stack* _sp) {
+    std::cout << "Состояние стека: ";
+    if (_sp != nullptr) {
+        std::cout << "стек не пуст. Элементы стека:";
+        std::cout << " вершина стека: " << _sp->value << ", ";
+        printStack(_sp);
+    }
+    else {
+        std::cout << "стек пуст.";
+    }
 }
 
-void Stack::resize(int newSize) {
-	int* newData = new int[newSize];
-	for (int i = 0; i <= sp; ++i) {
-		newData[i] = data[i];
-	}
-	delete[] data;
-	data = newData;
-	size = newSize;
-	cout << "Размер стека увеличен до " << newSize << "." << endl;
+Stack* push(Stack* _sp, int _value) {
+    Stack* item = new Stack;
+    if (item == nullptr) {
+        std::cerr << "Ошибка выделения памяти." << std::endl;
+        return _sp;
+    }
+    item->value = _value;
+    item->next = _sp;
+    _sp = item;
+    std::cout << "Элемент " << item->value << " добавлен в вершину стека." << std::endl;
+    return _sp;
 }
 
-int Stack::getVertexStack()
-{
-	if (!isEmpty()) {
-		return data[sp];
-	}
-	else {
-		return -1;
-	}
+void pushRandom(Stack*& _sp, int count) {
+    srand(time(0));
+    int value{ 0 };
+    for (int i = 0; i < count; ++i) {
+        value = rand() % 100;
+        _sp = push(_sp, value);
+    }
 }
 
-void Stack::forReturnDeletedItemStack() //можно ли итерироваться по стеку удаленных элементов?
-{
-	if (isEmpty()) {
-		std::cout << "Стек удаленных элементов пуст. " << std::endl;
-	}
-	else {
-		std::cout << "Стек удаленных элементов можно представить следующим образом: [";
-		for (int i = 0; i <= sp; i++) {
-			std::cout << data[i] << ", ";
-		}
-		std::cout << "]. ";
-	}
+void pushFromStack(Stack*& _sp, Stack*& _spDeleted) {
+    if (!isEmptyDeletedStack(_spDeleted)) {
+        Stack* current = _spDeleted;
+        _spDeleted = _spDeleted->next;
+        current->next = _sp;
+        _sp = current;
+    }
+    else {
+        std::cout << "Вспомогательный стек пуст. Элемент не был добавлен. " << std::endl;
+    }
 }
 
-void Stack::returnFullStack() //если итерироваться запрещено: создаем дополнительный список и работаем с перезаписью
-{
-	if (isEmpty()) {
-		std::cout << "Заданный стек пуст. " << std::endl;
-	}
-	else {
-		int* listMemory = new int[++sp];
-		std::cout << "Заданный стек можно представить следующим образом: [";
-		for (int i = 0; i <= sp; i++) {
-			std::cout << getVertexStack() << ", ";
-			listMemory[sp - i] = data[i];
-			pop();
-		}
-		std::cout << "]. ";
-		for (int i = 0; i <= sp;  i++) {
-			push(listMemory[i]);
-		}
-		delete[] listMemory;
-	}
+int pop(Stack*& _sp) {
+    if (!isEmpty(_sp)) {
+        int value = _sp->value;
+        Stack* current = _sp;
+        _sp = _sp->next;
+        delete current;
+        return value;
+    }
+    else {
+        std::cerr << "Попытка извлечения из пустого стека." << std::endl;
+        return -1;
+    }
 }
 
-void Stack::returnStack() {
-	cout << "Состояние стека: ";
-	if (!isEmpty()) {
-		cout << "cтек не пуст. Вершина стека: ( " << sp + 1 << ", " << data[sp] << " )." << endl;
-	}
-	else {
-		cout << "cтек пуст. " << endl;
-	}
+void moveToDeletedStack(Stack*& _sp, Stack*& _spDeleted) {
+    if (!isEmpty(_sp)) {
+        Stack* current = _sp;
+        _sp = _sp->next;
+        current->next = _spDeleted;
+        _spDeleted = current;
+    }
+    else {
+        std::cerr << "Попытка перемещения из пустого стека." << std::endl;
+    }
 }
 
-void Stack::pushRandom(int count)
-{
-	if (count >= size - sp) {
-		resize(count - sp);
-	}
-	srand(time(0)); 
-	int value{0};
-	for (int i = 0; i < count; ++i) {
-		value = rand() % 100;  // Генерация случайного числа от 0 до 99
-		push(value);
-	}
+void printStack(Stack*& stack) {
+    if (stack != NULL) {
+        Stack* current;
+        current = stack;
+        int i = 1;
+        std::cout << "элементы стека: (";
+        while (current != nullptr) {
+            std::cout << current->value;
+            current = current->next;
+            if (current != nullptr) {
+                std::cout << "; ";
+            }
+        }
+        std::cout << ")" << std::endl;
+    }
+    else {
+        std::cout << "Стек пуст.\n";
+    }
 }
 
-
+void clearStack(Stack*& _sp) {
+    while (_sp != nullptr) {
+        Stack* temp = _sp;
+        _sp = _sp->next;
+        delete temp;
+    }
+}

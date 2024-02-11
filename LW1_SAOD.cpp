@@ -8,9 +8,12 @@
 int main()
 {
     setlocale(LC_ALL, "Russian");
-    Stack mainStack(10); 
-    Stack defaultStack(3);
-    Stack deletedItemsStack(1);
+
+    Stack* sp;
+    Stack* spDeleted;
+
+    initNullStack(sp, spDeleted);
+    
     int operation{ 0 };
     int value{0};
     while (true) {
@@ -19,7 +22,7 @@ int main()
         switch (operation)
         {
         case 1:
-            mainStack.isEmpty() ? std::cout << "Стек пуст. " << std::endl : std::cout << "Стек не пуст." << std::endl;
+            isEmpty(sp) ? std::cout << "Стек пуст. " << std::endl : std::cout << "Стек не пуст." << std::endl;
             break;
         case 2:
             printMenu(2);
@@ -31,21 +34,21 @@ int main()
                 enteringNumber(0, 2, operation);
                 if (operation == 1) {
                     enteringNumber(0, 1000, value);
-                    mainStack.push(value);
+                    sp = push(sp, value);
                 }
                 else {
                     std::cout << "Резмерность желаемого множества. ";
                     enteringNumber(0, 1000, value);
-                    mainStack.pushRandom(value);
+                    pushRandom(sp,value);
                 }
                 
             }
             else if(operation == 2){
-                if (defaultStack.isEmpty()) {
+                if (isEmptyDeletedStack(spDeleted)) {
                     std::cout << "Вспомогательный стек пуст. Элемент не был добавлен. " << std::endl;
                 }
                 else { 
-                    mainStack.push(defaultStack.getVertexStack()); 
+                    pushFromStack(sp, spDeleted);
                 }
             }
             break;
@@ -53,22 +56,25 @@ int main()
             printMenu(3);
             enteringNumber(0, 2, operation);
             if (operation == 1) {
-                std::cout << "Вершина (" << mainStack.sp + 1 << ", " << mainStack.getVertexStack() << ") была удалена из стека." << std::endl;
+                std::cout << "Вершина " << pop(sp) << ") была удалена из стека." << std::endl;
             }
             else if(operation == 2){
-                std::cout << "Вершина (" << mainStack.sp + 1 << ", " << mainStack.getVertexStack() << ") была перемещена в стек удаленных элементов." << std::endl;
-                deletedItemsStack.push(mainStack.getVertexStack());
+                moveToDeletedStack(sp,spDeleted);
+                std::cout << "вспомогательный" << std::endl;
+                returnStackStaticFull(spDeleted);
             }
-            mainStack.pop();
-            mainStack.returnStack();
+            std::cout << "основной" << std::endl;
+
+            returnStackStatic(sp);
             break;
         case 4:
-            mainStack.returnStack();
+            returnStackStatic(sp);
             break;
         case 5:
-            deletedItemsStack.forReturnDeletedItemStack();
+            returnStackStaticFull(spDeleted);
             break;
         case 0:
+            clearStack(sp); clearStack(spDeleted);
             return 0;
             break;
         default:
