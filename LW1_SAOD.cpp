@@ -1,5 +1,4 @@
-﻿// First LW SAOD summer 2024 zadanie from r1, t2, z4
-
+﻿//Первая ЛР по курсу САОД код задания 1.2.4
 #include "stack.h"
 #include "Menu.h"
 
@@ -7,15 +6,18 @@
 
 int main()
 {
-    setlocale(LC_ALL, "Russian");
+    setlocale(LC_ALL, "Russian"); //изменение языка для корректного отображения в консоли
 
-    Stack* sp;
+    Stack* sp; //указатели
     Stack* spDeleted;
 
-    initNullStack(sp, spDeleted);
+    initNullStack(sp, spDeleted); //инициализация двух пустых стеков
+
+    std::cout << "Стек (динамическая реализация с доп функциями) " << std::endl;
     
-    int operation{ 0 };
-    int value{0};
+    int operation{ 0 }; //код операции, который будет запрошен у пользователя
+    int value{0}; //значение, которое будет запрошено от пользователя
+
     while (true) {
         printMenu(5);
         enteringNumber(0, 5, operation);
