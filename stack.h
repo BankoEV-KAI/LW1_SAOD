@@ -3,7 +3,7 @@
 #define STACK_H
 
 struct Stack {
-    int value;
+    int data;
     Stack* next;
 };
 
@@ -17,11 +17,11 @@ void returnStackStatic(const Stack* _sp);
 
 void returnStackStaticFull(Stack* _sp);
 
-Stack* push(Stack* _sp, int _value);
+void push(Stack*& _sp, int _value);
 
 void pushRandom(Stack*& _sp, int count);
 
-int pop(Stack*& _sp);
+void pop(Stack*& _sp);
 
 void moveToDeletedStack(Stack*& _sp, Stack*& _spDeleted);
 

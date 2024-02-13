@@ -21,7 +21,7 @@ void returnStackStatic(const Stack* _sp) {
     std::cout << "—осто€ние стека: ";
     if (_sp != nullptr) {
         std::cout << "стек не пуст. ";
-        std::cout << "¬ершина стека: " << _sp->value << std::endl;
+        std::cout << "¬ершина стека: " << _sp->data << std::endl;
     }
     else {
         std::cout << "стек пуст.";
@@ -32,7 +32,7 @@ void returnStackStaticFull(Stack* _sp) {
     std::cout << "—осто€ние стека: ";
     if (_sp != nullptr) {
         std::cout << "стек не пуст. Ёлементы стека:";
-        std::cout << " вершина стека: " << _sp->value << ", ";
+        std::cout << " вершина стека: " << _sp->data << ", ";
         printStack(_sp);
     }
     else {
@@ -40,17 +40,17 @@ void returnStackStaticFull(Stack* _sp) {
     }
 }
 
-Stack* push(Stack* _sp, int _value) {
+void push(Stack*& _sp, int _value) {
     Stack* item = new Stack;
     if (item == nullptr) {
         std::cerr << "ќшибка выделени€ пам€ти." << std::endl;
-        return _sp;
+        
     }
-    item->value = _value;
+    item->data = _value;
     item->next = _sp;
     _sp = item;
-    std::cout << "Ёлемент " << item->value << " добавлен в вершину стека." << std::endl;
-    return _sp;
+    std::cout << "Ёлемент " << item->data << " добавлен в вершину стека." << std::endl;
+    
 }
 
 void pushRandom(Stack*& _sp, int count) {
@@ -58,7 +58,7 @@ void pushRandom(Stack*& _sp, int count) {
     int value{ 0 };
     for (int i = 0; i < count; ++i) {
         value = rand() % 100;
-        _sp = push(_sp, value);
+        push(_sp, value);
     }
 }
 
@@ -68,23 +68,24 @@ void pushFromStack(Stack*& _sp, Stack*& _spDeleted) {
         _spDeleted = _spDeleted->next;
         current->next = _sp;
         _sp = current;
+        std::cout << "ѕроизошли изменени€ во вспомогательном стеке." << std::endl;
+        returnStackStatic(_spDeleted);
     }
     else {
-        std::cout << "¬спомогательный стек пуст. Ёлемент не был добавлен. " << std::endl;
+        std::cerr << "¬спомогательный стек пуст. Ёлемент не был добавлен. " << std::endl;
     }
 }
 
-int pop(Stack*& _sp) {
+void pop(Stack*& _sp) {
     if (!isEmpty(_sp)) {
-        int value = _sp->value;
+        int value = _sp->data;
         Stack* current = _sp;
         _sp = _sp->next;
         delete current;
-        return value;
+        std::cout << "Ёлемент вершины  " << value << " был удален из стека." << std::endl;
     }
     else {
         std::cerr << "ѕопытка извлечени€ из пустого стека." << std::endl;
-        return -1;
     }
 }
 
@@ -94,6 +95,8 @@ void moveToDeletedStack(Stack*& _sp, Stack*& _spDeleted) {
         _sp = _sp->next;
         current->next = _spDeleted;
         _spDeleted = current;
+        std::cout << "ѕроизошли изменени€ во вспомогательном стеке." << std::endl;
+        returnStackStatic(_spDeleted);
     }
     else {
         std::cerr << "ѕопытка перемещени€ из пустого стека." << std::endl;
@@ -107,7 +110,7 @@ void printStack(Stack*& stack) {
         int i = 1;
         std::cout << "элементы стека: (";
         while (current != nullptr) {
-            std::cout << current->value;
+            std::cout << current->data;
             current = current->next;
             if (current != nullptr) {
                 std::cout << "; ";
@@ -126,4 +129,5 @@ void clearStack(Stack*& _sp) {
         _sp = _sp->next;
         delete temp;
     }
+    std::cout << "—тек очищен." << std::endl;
 }

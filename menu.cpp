@@ -13,13 +13,13 @@ void enteringNumber(int rangeStart, int rangeStop, int& value) {
         if (std::cin.fail() || std::cin.peek() != '\n') {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Некорректный ввод. ";
+            std::cerr << "Некорректный ввод. ";
         }
         else if (value >= rangeStart && value <= rangeStop) {
             return;
         }
         else {
-            std::cout << "Некорректное число. ";
+            std::cerr << "Некорректное число. ";
         }
     }
 }
